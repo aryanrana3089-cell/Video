@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Surprise Page</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #0a2a5e;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .background {
+      width: 100%;
+      max-width: 1920px;
+      background: url('your-background.png') no-repeat center center;
+      background-size: cover;
+      padding: 20px;
+      box-sizing: border-box;
+      text-align: center;
+      position: relative;
+    }
+
+    h1 {
+      color: #0a2a5e;
+      background: rgba(255,255,255,0.9);
+      padding: 15px 25px;
+      border-radius: 12px;
+      font-size: 2rem;
+      margin-bottom: 30px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      font-family: "Georgia", serif;
+    }
+
+    /* Decorations */
+    .deco { position: absolute; opacity: 0.9; }
+    .star1 { top: 50px; left: 30px; width: 80px; }
+    .star2 { bottom: 100px; right: 60px; width: 80px; }
+    .camera { top: 200px; right: 150px; width: 150px; transform: rotate(10deg); }
+    .note { bottom: 200px; left: 100px; width: 180px; transform: rotate(-8deg); }
+    .moon { top: 80px; right: 120px; width: 120px; animation: floatMoon 4s ease-in-out infinite; }
+
+    @keyframes floatMoon {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0); }
+    }
+
+    /* Video preview */
+    .video-container {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .video-container video {
+      width: 640px;
+      height: 360px;
+      border: 5px solid #fff;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      cursor: pointer;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.8);
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    .modal.show { display: block; opacity: 1; }
+    .modal-content {
+      margin: 5% auto;
+      width: 80%;
+      max-width: 960px;
+      text-align: center;
+      animation: zoomIn 0.6s ease;
+    }
+    .modal video {
+      width: 100%;
+      height: auto;
+      border: 5px solid #fff;
+      box-shadow: 0 0 20px rgba(0,0,0,0.7);
+    }
+    .close {
+      color: #fff;
+      font-size: 40px;
+      font-weight: bold;
+      position: absolute;
+      top: 20px; right: 40px;
+      cursor: pointer;
+    }
+    @keyframes zoomIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    /* Sound bar */
+    .audio-section {
+      margin-top: 40px;
+      padding: 40px 20px;
+      border-radius: 12px;
+      width: 600px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      background: url('soundbar-background.png') no-repeat center center;
+      background-size: cover;
+    }
+    .audio-section h2 { color: #0a2a5e; margin-bottom: 15px; }
+    .audio-section audio { width: 100%; }
+
+    /* Letter icon and unfolding */
+    .letter-icon {
+      position: fixed;
+      bottom: 20px; right: 20px;
+      font-size: 2rem;
+      cursor: pointer;
+    }
+    .love-letter {
+      position: fixed;
+      bottom: 70px; right: 20px;
+      background: rgba(255,255,255,0.95);
+      padding: 20px;
+      border-radius: 12px;
+      width: 300px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      font-family: "Georgia", serif;
+      font-size: 1rem;
+      color: #0a2a5e;
+      line-height: 1.5;
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.8s ease;
+      overflow: hidden;
+    }
+    .love-letter.show { transform: scaleY(1); }
+  </style>
+</head>
+<body>
+  <div class="background">
+    <h1>𝑯𝒆𝒓𝒆'𝒔 𝒂 𝒔𝒖𝒓𝒑𝒓𝒊𝒔𝒆 𝒇𝒓𝒐𝒎 𝒎𝒚 𝒔𝒊𝒅𝒆 𝒕𝒐 𝒎𝒚 𝒇𝒂𝒗𝒐𝒖𝒓𝒊𝒕𝒆 𝒑𝒆𝒓𝒔𝒐𝒏</h1>
+
+    <!-- Decorations -->
+    <img src="star.png" class="deco star1" alt="star">
+    <img src="star.png" class="deco star2" alt="star">
+    <img src="camera.png" class="deco camera" alt="camera">
+    <img src="note.png" class="deco note" alt="note">
+    <img src="moon.png" class="deco moon" alt="moon">
+
+    <!-- Video preview -->
+    <div class="video-container">
+      <video id="previewVideo" muted autoplay loop>
+        <source src="your-video.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <!-- Modal -->
+    <div id="videoModal" class="modal">
+      <span class="close" id="closeModal">&times;</span>
+      <div class="modal-content">
+        <video id="fullVideo" controls autoplay>
+          <source src="your-video.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+
+    <!-- Sound bar -->
+    <div class="audio-section">
+      <h2>Play Sound</h2>
+      <audio controls>
+        <source src="your-audio.mp3" type="audio/mpeg">
+      </audio>
+    </div>
+  </div>
+
+  <!-- Letter icon and unfolding letter -->
+  <div class="letter-icon" id="letterIcon">💌</div>
+  <div class="love-letter" id="loveLetter">
+    💌 Yawiii, I love u ❤️ and I will keep loving u no matter what...  
+    🎂 I wish u a veryyy happy birthday 🥳🎉✨
+  </div>
+
+  <script>
+    // Video modal logic
+    const previewVideo = document.getElementById('previewVideo');
+    const modal = document.getElementById('videoModal');
+    const closeModal = document.getElementById('closeModal');
+    const fullVideo = document.getElementById('fullVideo');
+
+    previewVideo.addEventListener('click', () => {
+      modal.classList.add('show');
+      fullVideo.play();
+    });
+
+    closeModal.addEventListener('click', () => {
+      modal.classList.remove('show');
+      fullVideo.pause();
+      fullVideo.currentTime = 0;
+    });
+
+    window.addEventListener('click', (event) => {
+      if (event.target === modal) {
+        modal.classList.remove('show');
+        fullVideo.pause();
+        fullVideo.currentTime = 0;
+      }
+    });
+
+    // Letter unfolding logic
+    const letterIcon = document.getElementById('letterIcon');
+    const loveLetter = document.getElementById('loveLetter');
+
+    letterIcon.addEventListener('click', () => {
+      loveLetter.classList.toggle('show');
+    });
+  </script>
+</body>
