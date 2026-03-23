@@ -121,8 +121,12 @@
     .letter-icon {
       position: fixed;
       bottom: 20px; right: 20px;
-      font-size: 2rem;
+      font-size: 4rem; /* Increased size */
       cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .letter-icon:hover {
+      transform: scale(1.2); /* Gentle hover effect */
     }
     .love-letter {
       position: fixed;
@@ -216,10 +220,4 @@
 
     // Letter unfolding logic
     const letterIcon = document.getElementById('letterIcon');
-    const loveLetter = document.getElementById('loveLetter');
-
-    letterIcon.addEventListener('click', () => {
-      loveLetter.classList.toggle('show');
-    });
-  </script>
-</body>
+    const loveLetter =
